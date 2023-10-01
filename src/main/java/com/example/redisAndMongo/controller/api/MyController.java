@@ -2,11 +2,10 @@ package com.example.redisAndMongo.controller.api;
 
 //import com.example.redisAndMongo.entity.Customer;
 //import com.example.redisAndMongo.repository.CustomerRepository;
-import com.example.redisAndMongo.entity.Employee;
-import com.example.redisAndMongo.repository.EmployeeRepository;
+import com.example.redisAndMongo.entity.Customer;
+import com.example.redisAndMongo.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,49 +23,14 @@ import java.util.Set;
 @RestController
 public class MyController {
     @Autowired
-    StringRedisTemplate redisTemplate;
+    private StringRedisTemplate redisTemplate;
 
     @Autowired
-    private EmployeeRepository employeeRepository;
+    private CustomerRepository customerRepository;
 
-    @GetMapping("/employee")
-    @Cacheable(value = "employee")
-    public List<Employee> getAllEmployees(){
-        return (List<Employee>) employeeRepository.findAll();
-    }
-
-    @GetMapping("/firstName/{firstName}")
-    public Optional<Employee> getByFirstName(@PathVariable String firstName){
-        return employeeRepository.findByFirstName(firstName);
-    }
-
-    @GetMapping("/lastName/{lastName}")
-    public Optional<Employee> getByLastName(@PathVariable String lastName){
-        return employeeRepository.findByLastName(lastName);
-    }
-
-    @GetMapping("/{firstName}/{lastName}")
-    public Employee saveEmployee(@PathVariable String firstName, @PathVariable String lastName){
-        Employee employee = new Employee();
-        employee.setFirstName(firstName);
-        employee.setLastName(lastName);
-        employee.setEmail("a@b.com");
-        return employeeRepository.save(employee);
-    }
-
-    @PutMapping("/employee/{id}")
-    public ResponseEntity<Employee> updateEmployee(@PathVariable("id") Integer id, @RequestBody Employee employee) {
-        Optional<Employee> tutorialData = employeeRepository.findById(id);
-
-        if (tutorialData.isPresent()) {
-            Employee _employee = tutorialData.get();
-            _employee.setEmail(employee.getEmail());
-            _employee.setFirstName(employee.getFirstName());
-            _employee.setLastName(employee.getLastName());
-            return new ResponseEntity<>(employeeRepository.save(_employee), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+    @GetMapping("/username/{username}")
+    public Optional<Customer> getByFirstName(@PathVariable String username){
+        return customerRepository.findByUsername(username);
     }
 
     @GetMapping("/getAllKeys")
